@@ -1,0 +1,28 @@
+name: Databricks Publish
+
+on:
+  push:
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump context
+        uses: crazy-max/ghaction-dump-context@v2
+      - name: echo
+        run: |
+         - echo ${{ github.event.repository.name }}
+      - name: Run shell script
+        run: |
+          # Extract the branch name from GITHUB_REF
+          branch_name=$(echo "${GITHUB_REF#refs/heads/}")
+
+          # Print the branch name
+          echo "Branch name: $branch_name"
+
+          # Use the branch name in an if condition
+          if [ "$branch_name" == "main" ]; then
+            echo "Branch is 'main'"
+          else
+            echo "Branch is not 'main'"
+          fi
