@@ -11,7 +11,7 @@ jobs:
         uses: crazy-max/ghaction-dump-context@v2
       - name: echo
         run: |
-         - echo ${{ github.event.repository.name }}
+          echo ${{ github.event.repository.name }}
       - name: Run shell script
         run: |
           # Extract the branch name from GITHUB_REF
