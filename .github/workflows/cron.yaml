@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  schedule:
+      - cron: '40 17 * * 1,2,3,4,5' # MON - FRI 05:00PM UTC
+
+jobs:
+  TriggerACP_Pipeline:
+    needs: [ ACP_WebApp_IMAGE_BUILD_DEV, ACP_WebApp_IMAGE_BUILD_QA, ACP_WebApp_IMAGE_BUILD_PROD ]
+    if: (endsWith(github.ref, 'develop') || endsWith(github.ref, 'qa_acp'))
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump context
+      uses: crazy-max/ghaction-dump-context@v2
+    - id: setVariables
+      name: Set Var
+      run: |
+        branch_name=$(echo "${GITHUB_REF#refs/heads/}")
+        echo $branch_name
+        echo "branch_name=$branch_name" >> $GITHUB_ENV
+        if [ "$branch_name" == "develop" ]; then
+          echo "workflow_file=test.yaml" >> $GITHUB_ENV
+        else
+          echo "workflow_file=acp_qa.yaml" >> $GITHUB_ENV
+        fi
+    - name: create workflow dispatch
+      id: create_dispatch
+      uses: octokit/request-action@v2.x
+      with:
+        route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
+        owner: nmotapar
+        repo: test-gh-actions
+        workflow_id: ${{ env.workflow_file }}
+        ref: ${{ env.branch_name }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}

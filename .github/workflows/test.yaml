@@ -1,6 +1,7 @@
 name: Databricks Publish
 
 on:
+  workflow_dispatch:
   push:
 
 jobs:
