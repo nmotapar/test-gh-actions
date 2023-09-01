@@ -2,11 +2,10 @@ name: Release
 
 on:
   schedule:
-      - cron: '40 17 * * 1,2,3,4,5' # MON - FRI 05:00PM UTC
+      - cron: '52 17 * * 1,2,3,4,5' # MON - FRI 05:00PM UTC
 
 jobs:
   TriggerACP_Pipeline:
-    needs: [ ACP_WebApp_IMAGE_BUILD_DEV, ACP_WebApp_IMAGE_BUILD_QA, ACP_WebApp_IMAGE_BUILD_PROD ]
     if: (endsWith(github.ref, 'develop') || endsWith(github.ref, 'qa_acp'))
     runs-on: ubuntu-latest
     steps:
